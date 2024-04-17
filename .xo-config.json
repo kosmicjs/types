@@ -1,0 +1,19 @@
+{
+  "ignores": ["test/temp", "coverage"],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "pretter": true,
+  "space": true,
+  "rules": {
+    "capitalized-comments": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/triple-slash-reference": "off",
+    "unicorn/prefer-event-target": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "@typescript-eslint/member-ordering": "off"
+  }
+}

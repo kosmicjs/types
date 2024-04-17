@@ -1,0 +1,76 @@
+{
+  "name": "@kosmic/types",
+  "version": "0.0.0",
+  "description": "An awesome opinionated starter template for new projects!",
+  "license": "MIT",
+  "author": {
+    "name": "Spencer Snyder",
+    "email": "sasnyde2@gmail.com",
+    "url": "https://spencersnyder.io"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.js"
+      }
+    }
+  },
+  "main": "",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "npm run clean && tsc --project tsconfig.json",
+    "build:watch": "npm run clean && tsc --project tsconfig.json --watch",
+    "check": "tsc --project ./tsconfig.json",
+    "clean": "rimraf dist",
+    "dev": "NODE_NO_WARNINGS=1 node --enable-source-maps --import tsx/esm ./src/index.ts",
+    "dev:watch": "NODE_NO_WARNINGS=1 node --enable-source-maps --watch --import tsx/esm ./src/index.ts",
+    "lint": "xo",
+    "lint:fix": "xo --fix",
+    "release": "np",
+    "test": "NODE_NO_WARNINGS=1 node --test --import tsx/esm ./test/index.test.ts | tap-mocha-reporter spec",
+    "test:watch": "NODE_NO_WARNINGS=1 node --test --watch --import tsx/esm ./test/index.test.ts | tap-mocha-reporter spec",
+    "update": "ncu -i"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-packagejson"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-conventional": "^19.1.0",
+    "@types/accepts": "^1.3.7",
+    "@types/content-disposition": "^0.5.8",
+    "@types/content-type": "^1.1.8",
+    "@types/cookies": "^0.9.0",
+    "@types/debug": "^4.1.12",
+    "@types/delegates": "^1.0.3",
+    "@types/destroy": "^1.0.3",
+    "@types/encodeurl": "^1.0.2",
+    "@types/escape-html": "^1.0.4",
+    "@types/fresh": "^0.5.2",
+    "@types/http-assert": "^1.5.5",
+    "@types/http-errors": "^2.0.4",
+    "@types/mime-types": "^2.1.4",
+    "@types/parseurl": "^1.3.3",
+    "@types/statuses": "^1.5.0",
+    "@types/type-is": "^1.6.6",
+    "@types/vary": "^1.1.3",
+    "c8": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "np": "^10.0.2",
+    "npm-check-updates": "latest",
+    "npm-package-json-lint": "^7.1.0",
+    "npm-package-json-lint-config-default": "^6.0.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-packagejson": "^2.4.14",
+    "rimraf": "^5.0.5",
+    "tap-mocha-reporter": "^5.0.4",
+    "tsx": "^4.7.1",
+    "type-fest": "^4.15.0",
+    "typescript": "^5.4.5",
+    "xo": "^0.58.0"
+  }
+}
