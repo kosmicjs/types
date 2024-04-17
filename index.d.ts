@@ -1489,11 +1489,7 @@ declare class Koa extends EventEmitter {
    * @api private
    */
   onerror(error: HttpError): void;
-  /**
-   * Help TS users comply to CommonJS, ESM, bundler mismatch.
-   * @see https://github.com/koajs/koa/issues/1513
-   */
-  static get default(): typeof Koa;
+
   createAsyncCtxStorageMiddleware(): Koa.Middleware;
 }
 
