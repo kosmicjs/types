@@ -19,7 +19,8 @@
   "main": "",
   "types": "koa.d.ts",
   "files": [
-    "*.d.ts"
+    "*.d.ts",
+    "tsconfig.kosmic.json"
   ],
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.json",
