@@ -32,6 +32,7 @@
     "lint:fix": "xo --fix",
     "prepare": "husky",
     "release": "np",
+    "test": "echo \"Error: no test specified\"",
     "update": "ncu -i"
   },
   "prettier": {
