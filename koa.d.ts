@@ -2,7 +2,7 @@
 /// <reference types="node" />
 import {EventEmitter} from 'node:events';
 import {type ParsedUrlQuery} from 'node:querystring';
-import type Stream from 'node:stream';
+import type Stream = require('node:stream');
 import type {Buffer} from 'node:buffer';
 import util from 'node:util';
 import {type TLSSocket} from 'node:tls';
@@ -16,8 +16,8 @@ import {
 } from 'node:http';
 import {type Socket} from 'node:net';
 import {type AsyncLocalStorage} from 'node:async_hooks';
-import type accepts from 'accepts';
-import type httpAssert from 'http-assert';
+import type accepts = require('accepts');
+import type httpAssert = require('http-assert');
 import type * as Cookies from 'cookies';
 import {type UnknownRecord, type Simplify, type SetOptional} from 'type-fest';
 import {
@@ -32,7 +32,7 @@ declare namespace Koa {
    * The next function caller in a Koa Middleware chain.
    * Always returns a promise and allows for fine grained middleware control flow.
    */
-  export type Next = () => Promise<unknown>;
+  type Next = () => Promise<unknown>;
 
   /**
    * Composeable middleware.
@@ -40,7 +40,7 @@ declare namespace Koa {
    * @param context - The Koa extended context object
    * @param next - The next function to be call the next next middleware in the middleware chain.
    */
-  export type Middleware<C = Context> = (
+  type Middleware<C = Context> = (
     /**
      * The Koa extended context object
      */
@@ -53,7 +53,7 @@ declare namespace Koa {
     next: Next,
   ) => Promise<unknown>;
 
-  export interface Options {
+  interface Options {
     env?: string;
     keys?: string[];
     proxy?: boolean;
@@ -447,9 +447,9 @@ declare namespace Koa {
    * To help maintain type compatibility with current third party types we
    * can just use the names of the types instead of the types themselves for extending where we want
    */
-  export interface Request {}
+  interface Request {}
 
-  export interface KoaRequest
+  interface KoaRequest
     extends Simplify<BaseRequest & RequestExtras & Request> {}
 
   interface ResponseExtras extends UnknownRecord {
@@ -690,7 +690,7 @@ declare namespace Koa {
   /**
    * This type is meant to be used internally by Kosmic.
    */
-  export interface InternalKoaResponse
+  interface InternalKoaResponse
     extends BaseResponse,
     Partial<ResponseExtras> {}
   /**
@@ -780,7 +780,6 @@ declare namespace Koa {
      *
      * Not for public use, avoid using this function
      *
-     * @private
      */
     onerror(
       error:
@@ -913,7 +912,7 @@ declare namespace Koa {
      *
      * If response.status has not been set, Koa will automatically set the status to 200 or 204 depending on response.body. Specifically, if response.body has not been set or has been set as null or undefined, Koa will automatically set response.status to 204. If you really want to send no content response with other status, you should override the 204 status as the following way:
      *
-     * @exmple
+     * @example
      * ```ts
      * // This must be always set first before status, since null | undefined
      * // body automatically sets the status to 204
@@ -955,7 +954,7 @@ declare namespace Koa {
      * Set the Last-Modified date using a string or a Date.
      * Get the Last-Modified date in Date form, if it exists.
      *
-     * @exmaple
+     * @example
      * ```ts
      * this.response.lastModified // => Mon, 15 Jun 2020 20:51:45 GMT
      * this.response.lastModified = new Date();
@@ -987,7 +986,6 @@ declare namespace Koa {
      * as node sometimes does not set it.
      *
      * @return {Boolean}
-     * @private
      */
     readonly writable: KoaResponse['writable'];
   }
@@ -1292,7 +1290,6 @@ declare namespace Koa {
      */
     originalUrl?: string;
     /**
-     * @private
      */
     [COOKIES: symbol]: Cookies;
     /**
@@ -1326,7 +1323,7 @@ declare namespace Koa {
   /**
    * The internal context object meant for internal use only
    */
-  export type InternalContext<
+  type InternalContext<
     State = UnknownRecord,
     ResponseBody = unknown,
   > = ContextBase &
@@ -1337,7 +1334,7 @@ declare namespace Koa {
    * extendable ctx.state interface
    */
   interface State extends UnknownRecord {}
-  export interface DefaultState extends State {}
+  interface DefaultState extends State {}
   /**
    * The extendable context object
    */
@@ -1350,8 +1347,8 @@ declare namespace Koa {
     ExtendableContext
     > {}
 
-  export interface DefaultContext<CtxState = State, ResponseBody = unknown> extends Context<CtxState, ResponseBody> {}
-  export interface ParameterizedContext<CtxState = State, X = Record<string, unknown>, ResponseBody = unknown> extends Context<CtxState, ResponseBody> {}
+  interface DefaultContext<CtxState = State, ResponseBody = unknown> extends Context<CtxState, ResponseBody> {}
+  interface ParameterizedContext<CtxState = State, X = Record<string, unknown>, ResponseBody = unknown> extends Context<CtxState, ResponseBody> {}
 }
 
 declare class Koa extends EventEmitter {
@@ -1413,13 +1410,12 @@ declare class Koa extends EventEmitter {
    */
   response: Response;
   /**
-   * @prop app.keys
+   * app.keys
    * array of signed cookie keys
    */
   keys?: string[];
   /**
    * middleware
-   * @private
    */
   private readonly middleware;
   /**
@@ -1429,7 +1425,6 @@ declare class Koa extends EventEmitter {
   silent?: boolean;
   /**
    * async local storage
-   * @private
    */
   private readonly ctxStorage?;
   [util.inspect.custom]?: () => UnknownRecord;
@@ -1465,7 +1460,7 @@ declare class Koa extends EventEmitter {
   callback(): (
     req: IncomingMessage,
     res: ServerResponse,
-  ) => Promise<void | ServerResponse | undefined>;
+  ) => Promise<ServerResponse | undefined>;
   /**
    * return current context from async local storage
    */

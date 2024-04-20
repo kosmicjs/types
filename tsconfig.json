@@ -16,5 +16,5 @@
     "declaration": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": ["./index.d.ts"]
+  "include": ["koa.d.ts", "koa-session.d.ts"]
 }

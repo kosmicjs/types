@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "koa": ["./node_modules/@kosmic/types/koa.d.ts"],
+      "koa-session": ["./node_modules/@kosmic/types/koa-session.d.ts"]
+    }
+  }
+}

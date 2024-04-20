@@ -1,4 +1,5 @@
 {
+  "extends": ["plugin:@definitelytyped/all"],
   "ignores": ["test/temp", "coverage"],
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -12,6 +13,7 @@
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/triple-slash-reference": "off",
+    "@typescript-eslint/no-require-imports": "off",
     "unicorn/prefer-event-target": "off",
     "unicorn/prevent-abbreviations": "off",
     "@typescript-eslint/member-ordering": "off"

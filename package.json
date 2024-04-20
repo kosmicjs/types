@@ -9,15 +9,15 @@
     "url": "https://spencersnyder.io"
   },
   "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/src/index.d.ts",
-        "default": "./dist/src/index.js"
-      }
+    "./koa": {
+      "types": "./koa.d.ts"
+    },
+    "./koa-session": {
+      "types": "./koa-session.d.ts"
     }
   },
   "main": "",
-  "types": "index.d.ts",
+  "types": "koa.d.ts",
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.json",
     "build:watch": "npm run clean && tsc --project tsconfig.json --watch",
@@ -39,6 +39,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-conventional": "^19.2.2",
+    "@definitelytyped/eslint-plugin": "^0.1.12",
     "@types/accepts": "^1.3.7",
     "@types/content-disposition": "^0.5.8",
     "@types/content-type": "^1.1.8",
