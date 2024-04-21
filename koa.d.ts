@@ -15,11 +15,12 @@ import {
   type ServerResponse,
 } from 'node:http';
 import {type Socket} from 'node:net';
-import {type AsyncLocalStorage} from 'node:async_hooks';
 import type accepts = require('accepts');
 import type httpAssert = require('http-assert');
 import type * as Cookies from 'cookies';
-import {type UnknownRecord, type Simplify, type SetOptional} from 'type-fest';
+import {
+  type UnknownRecord, type Simplify, type SetOptional, type Primitive,
+} from 'type-fest';
 import {
   type HttpError,
   type HttpErrorConstructor,
@@ -53,31 +54,72 @@ declare namespace Koa {
     next: Next,
   ) => Promise<unknown>;
 
+  /**
+   * Options for the Koa class constructor.
+   *
+   * env - Defaulting to the NODE_ENV or "development"
+   *
+   * keys - Array of signed cookie keys
+   *
+   * proxy - Trust proxy headers
+   *
+   * subdomainOffset - Subdomain offset
+   *
+   * proxyIpHeader - Proxy IP header
+   *
+   * maxIpsCount - Max IPs count
+   *
+   * compose - Compose middleware
+   *
+   * asyncLocalStorage - Async local storage
+   */
   interface Options {
+    /**
+     * Defaulting to the NODE_ENV or "development"
+     */
     env?: string;
+    /**
+     * Array of signed cookie keys
+     */
     keys?: string[];
+    /**
+     * when true proxy header fields will be trusted
+     */
     proxy?: boolean;
+    /**
+     * offset of .subdomains to ignore, default to 2
+     */
     subdomainOffset?: number;
+    /**
+     *  proxy ip header, default to X-Forwarded-For
+     */
     proxyIpHeader?: string;
+    /**
+     * max ips read from proxy ip header, default to 0 (means infinity)
+     */
     maxIpsCount?: number;
+    /**
+     * Compose middleware
+     */
     compose?: (middleware: Middleware[]) => Middleware;
+    /**
+     * Async local storage
+     */
     asyncLocalStorage?: boolean;
   }
 
-  interface RequestExtras extends UnknownRecord {
+  interface Request extends UnknownRecord {
     req: IncomingMessage;
     res: ServerResponse;
     originalUrl: string | undefined;
     app: Koa;
     memoizedURL: URL | Record<string, unknown>;
     ctx: Context;
-    response: KoaResponse;
+    response: Response;
     _accept: accepts.Accepts;
     _querycache: Record<string, ParsedUrlQuery>;
     [IP: symbol]: string;
-  }
 
-  interface BaseRequest {
     /**
      * Return request header.
      *
@@ -440,31 +482,16 @@ declare namespace Koa {
     toJSON(): UnknownRecord;
   }
 
-  interface InternalKoaRequest
-    extends Simplify<BaseRequest & Partial<RequestExtras>> {}
-
-  /**
-   * To help maintain type compatibility with current third party types we
-   * can just use the names of the types instead of the types themselves for extending where we want
-   */
-  interface Request {}
-
-  interface KoaRequest
-    extends Simplify<BaseRequest & RequestExtras & Request> {}
-
-  interface ResponseExtras extends UnknownRecord {
+  interface Response<Body = any> extends UnknownRecord {
     app: Koa;
     res: ServerResponse;
     req: IncomingMessage;
-    request: KoaRequest;
+    request: Request;
     _explicitNullBody: boolean;
     _explicitStatus: boolean;
     _body: Stream | Buffer | string | UnknownRecord | undefined;
     ctx: Context;
-  }
-  interface ResponseBody {}
 
-  interface BaseResponse<Body = ResponseBody> {
     /**
      * Return the request socket.
      *
@@ -687,22 +714,7 @@ declare namespace Koa {
      */
     flushHeaders(): void;
   }
-  /**
-   * This type is meant to be used internally by Kosmic.
-   */
-  interface InternalKoaResponse
-    extends BaseResponse,
-    Partial<ResponseExtras> {}
-  /**
-   * To help maintain type compatibility with current third party types we
-   * can just use the names of the types instead of the types themselves for extending where we want
-   */
-  interface Response {}
-  /**
-   * The extendable type for the response object.
-   */
-  interface KoaResponse<Body = unknown>
-    extends Simplify<BaseResponse<Body> & ResponseExtras & Response> {}
+
   /**
    * The types for the base context object
    */
@@ -798,7 +810,7 @@ declare namespace Koa {
      *
      * ctx.attachment('path/to/logo.png');
      */
-    attachment: KoaResponse['attachment'];
+    attachment: Response['attachment'];
     /**
      * Perform a [302] redirect to url.
      *
@@ -824,19 +836,19 @@ declare namespace Koa {
      * @param url - the url to redirect to or 'back'
      * @param alt - the url to redirect to if 'back' is used
      */
-    redirect: KoaResponse['redirect'];
+    redirect: Response['redirect'];
     /**
      * Remove header `field`.
      *
      * @param field - the field name to remove
      */
-    remove: KoaResponse['remove'];
+    remove: Response['remove'];
     /**
      * Vary on `field`.
      *
      * @param field - the field name to vary on
      */
-    vary: KoaResponse['vary'];
+    vary: Response['vary'];
     /**
      * Returns true if the header identified by name is currently set in the outgoing headers.
      * The header name matching is case-insensitive.
@@ -851,7 +863,7 @@ declare namespace Koa {
      *
      * @param field
      */
-    has: KoaResponse['has'];
+    has: Response['has'];
     /**
      * Set header `field` to `val` or pass
      * an object of header fields.
@@ -865,7 +877,7 @@ declare namespace Koa {
      * @param {String|Object|Array} field
      * @param {String} val
      */
-    set: KoaResponse['set'];
+    set: Response['set'];
     /**
      * Append additional header `field` with value `val`.
      *
@@ -880,23 +892,23 @@ declare namespace Koa {
      * @param field
      * @param val
      */
-    append: KoaResponse['append'];
+    append: Response['append'];
     /**
      * Flush any set headers and begin the body
      */
-    flushHeaders: KoaResponse['flushHeaders'];
+    flushHeaders: Response['flushHeaders'];
     /**
      * ctx.status=
      *
      * Get/set response status code.
      */
-    status: KoaResponse['status'];
+    status: Response['status'];
     /**
      * ctx.message
      *
      * Get/Set response status message
      */
-    message: KoaResponse['message'];
+    message: Response['message'];
     /**
      * ctx.body
      *
@@ -932,7 +944,7 @@ declare namespace Koa {
      * })
      * ```
      */
-    body: KoaResponse<ResponseBody>['body'];
+    body: Response<ResponseBody>['body'];
     /**
      * ctx.length
      *
@@ -944,12 +956,12 @@ declare namespace Koa {
      * ctx.length = 1024;
      * ```
      */
-    length: KoaResponse['length'];
+    length: Response['length'];
     /**
      * Return the response mime type void of
      * parameters such as "charset".
      */
-    type: KoaResponse['type'];
+    type: Response['type'];
     /**
      * Set the Last-Modified date using a string or a Date.
      * Get the Last-Modified date in Date form, if it exists.
@@ -961,7 +973,7 @@ declare namespace Koa {
      * this.response.lastModified = '2013-09-13';
      * ```
      */
-    lastModified: KoaResponse['lastModified'];
+    lastModified: Response['lastModified'];
     /**
      * Get/Set the ETag of a response.
      * This will normalize the quotes if necessary.
@@ -973,13 +985,13 @@ declare namespace Koa {
      *     this.response.etag = 'W/"123456789"';
      * ```
      */
-    etag: KoaResponse['etag'];
+    etag: Response['etag'];
     /**
      * Check if a header has been written to the socket.
      *
      * @return {Boolean}
      */
-    readonly headerSent: KoaResponse['headerSent'];
+    readonly headerSent: Response['headerSent'];
     /**
      * Checks if the request is writable.
      * Tests for the existence of the socket
@@ -987,7 +999,7 @@ declare namespace Koa {
      *
      * @return {Boolean}
      */
-    readonly writable: KoaResponse['writable'];
+    readonly writable: Response['writable'];
   }
   /**
    * The context object delegate for the request
@@ -1005,7 +1017,7 @@ declare namespace Koa {
      * @return {Array|String}
      * @api public
      */
-    acceptsLanguages: KoaRequest['acceptsLanguages'];
+    acceptsLanguages: Request['acceptsLanguages'];
     /**
      * Return accepted encodings or best fit based on `encodings`.
      *
@@ -1018,7 +1030,7 @@ declare namespace Koa {
      * @return {String|Array}
      * @api public
      */
-    acceptsEncodings: KoaRequest['acceptsEncodings'];
+    acceptsEncodings: Request['acceptsEncodings'];
     /**
      * Return accepted charsets or best fit based on `charsets`.
      *
@@ -1031,7 +1043,7 @@ declare namespace Koa {
      * @return {String|Array}
      * @api public
      */
-    acceptsCharsets: KoaRequest['acceptsCharsets'];
+    acceptsCharsets: Request['acceptsCharsets'];
     /**
      * Check if the given `type(s)` is acceptable, returning
      * the best match when true, otherwise `false`, in which
@@ -1073,7 +1085,7 @@ declare namespace Koa {
      * @return {String|Array|false}
      * @api public
      */
-    accepts: KoaRequest['accepts'];
+    accepts: Request['accepts'];
     /**
      * Return request header.
      *
@@ -1095,7 +1107,7 @@ declare namespace Koa {
      * @return {String}
      * @api public
      */
-    get: KoaRequest['get'];
+    get: Request['get'];
     /**
      * Check if the incoming request contains the "Content-Type"
      * header field and if it contains any of the given mime `type`s.
@@ -1122,53 +1134,53 @@ declare namespace Koa {
      * @return {String|false|null}
      * @api public
      */
-    is: KoaRequest['is'];
+    is: Request['is'];
     /**
      * Get/set query string.
      */
-    querystring: KoaRequest['querystring'];
+    querystring: Request['querystring'];
     /**
      * check if the request is idempotent
      */
-    readonly idempotent: KoaRequest['idempotent'];
+    readonly idempotent: Request['idempotent'];
     /**
      * Return the request socket.
      */
-    readonly socket: KoaRequest['socket'];
+    readonly socket: Request['socket'];
     /**
      * Get/set the search string. Same as
      * request.querystring= but included for ubiquity.
      */
-    search: KoaRequest['search'];
+    search: Request['search'];
     /**
      * Get/set the reqest method
      */
-    method: KoaRequest['method'];
+    method: Request['method'];
     /**
      * Get/set the parsed query-string
      */
-    query: KoaRequest['query'];
+    query: Request['query'];
     /**
      * Get/set the pathname, retaining the querystring when present
      */
-    path: KoaRequest['path'];
+    path: Request['path'];
     /**
      * Get/set the request URL.
      */
-    url: KoaRequest['url'];
+    url: Request['url'];
     /**
      * Get/set accept object.
      * Lazily memoized.
      */
-    accept: KoaRequest['accept'];
+    accept: Request['accept'];
     /**
      * Get origin of URL.
      */
-    readonly origin: KoaRequest['origin'];
+    readonly origin: Request['origin'];
     /**
      * Get full request URL.
      */
-    readonly href: KoaRequest['href'];
+    readonly href: Request['href'];
     /**
      * Return subdomains as an array.
      *
@@ -1181,7 +1193,7 @@ declare namespace Koa {
      * `["ferrets", "tobi"]`.
      * If `app.subdomainOffset` is 3, this.subdomains is `["tobi"]`.
      */
-    readonly subdomains: KoaRequest['subdomains'];
+    readonly subdomains: Request['subdomains'];
     /**
      * Return the protocol string "http" or "https"
      * when requested with TLS. When the proxy setting
@@ -1190,50 +1202,50 @@ declare namespace Koa {
      * a reverse proxy that supplies https for you this
      * may be enabled.
      */
-    readonly protocol: KoaRequest['protocol'];
+    readonly protocol: Request['protocol'];
     /**
      * Parse the "Host" header field host
      * and support X-Forwarded-Host when a
      * proxy is enabled.
      */
-    readonly host: KoaRequest['host'];
+    readonly host: Request['host'];
     /**
      * Parse the "Host" header field hostname
      * and support X-Forwarded-Host when a
      * proxy is enabled.
      */
-    readonly hostname: KoaRequest['hostname'];
+    readonly hostname: Request['hostname'];
     /**
      * Get WHATWG parsed URL.
      * Lazily memoized.
      */
-    readonly URL: KoaRequest['URL'];
+    readonly URL: Request['URL'];
     /**
      * Return request header.
      */
-    readonly header: KoaRequest['header'];
+    readonly header: Request['header'];
     /**
      * Return request headers, same as request.header
      */
-    readonly headers: KoaRequest['headers'];
+    readonly headers: Request['headers'];
     /**
      * Shorthand for:
      *
      *    this.protocol == 'https'
      */
-    readonly secure: KoaRequest['secure'];
+    readonly secure: Request['secure'];
     /**
      * Check if the request is stale, aka
      * "Last-Modified" and / or the "ETag" for the
      * resource has changed.
      */
-    readonly stale: KoaRequest['stale'];
+    readonly stale: Request['stale'];
     /**
      * Check if the request is fresh, aka
      * Last-Modified and/or the ETag
      * still match.
      */
-    readonly fresh: KoaRequest['fresh'];
+    readonly fresh: Request['fresh'];
     /**
      * When `app.proxy` is `true`, parse
      * the "X-Forwarded-For" ip address list.
@@ -1242,23 +1254,23 @@ declare namespace Koa {
      * you would receive the array `["client", "proxy1", "proxy2"]`
      * where "proxy2" is the furthest down-stream.
      */
-    readonly ips: KoaRequest['ips'];
+    readonly ips: Request['ips'];
     /**
      * Return request's remote address
      * When `app.proxy` is `true`, parse
      * the "X-Forwarded-For" ip address list and return the first one
      */
-    readonly ip: KoaRequest['ip'];
+    readonly ip: Request['ip'];
   }
   interface ContextExtras<UserState = State> {
     /**
      * A Koa Response object
      */
-    response: KoaResponse;
+    response: Response;
     /**
      * A Koa Request object
      */
-    request: KoaRequest;
+    request: Request;
     /**
      * The node js request object
      *
@@ -1410,7 +1422,7 @@ declare class Koa extends EventEmitter {
   /**
    * The koa request object.
    */
-  request: Koa.KoaRequest;
+  request: Koa.Request;
   /**
    * The incoming node request object.
    */
