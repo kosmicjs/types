@@ -3,7 +3,9 @@
     "paths": {
       "koa": ["./node_modules/@kosmic/types/koa.d.ts"],
       "koa-session": ["./node_modules/@kosmic/types/koa-session.d.ts"],
-      "koa-compose": ["./node_modules/@kosmic/types/koa-compose.d.ts"]
+      "koa-compose": ["./node_modules/@kosmic/types/koa-compose.d.ts"],
+      "koa-static": ["./node_modules/@kosmic/types/koa-static.d.ts"],
+      "koa-send": ["./node_modules/@kosmic/types/koa-send.d.ts"]
     }
   }
 }

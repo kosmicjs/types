@@ -1353,6 +1353,17 @@ declare namespace Koa {
 
 /**
  * The Koa application class.
+ *
+ * @example
+ * ```ts
+ * const app = new Koa();
+ *
+ * app.use(async ctx => {
+ *   ctx.body = 'Hello World';
+ * });
+ *
+ * app.listen(3000);
+ * ```
  */
 declare class Koa extends EventEmitter {
   /**
