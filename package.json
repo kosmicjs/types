@@ -41,6 +41,9 @@
       "prettier-plugin-packagejson"
     ]
   },
+  "dependencies": {
+    "koa-compose": "^4.1.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-conventional": "^19.2.2",

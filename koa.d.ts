@@ -1351,6 +1351,9 @@ declare namespace Koa {
   interface ParameterizedContext<CtxState = State, X = Record<string, unknown>, ResponseBody = unknown> extends Context<CtxState, ResponseBody> {}
 }
 
+/**
+ * The Koa application class.
+ */
 declare class Koa extends EventEmitter {
   /**
    * Make HttpError available to consumers of the library so that consumers don't
