@@ -1510,8 +1510,6 @@ declare class Koa extends EventEmitter {
    * @api private
    */
   onerror(error: HttpError): void;
-
-  createAsyncCtxStorageMiddleware(): Koa.Middleware;
 }
 
 export = Koa;
