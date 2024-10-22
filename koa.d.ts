@@ -589,9 +589,9 @@ declare namespace Koa {
     /**
      * Perform a 302 redirect to `url`.
      *
-     * The string "back" is special-cased
-     * to provide Referrer support, when Referrer
-     * is not present `alt` or "/" is used.
+     * The (deprecated) string "back" is special-cased
+     * to provide Referrer support. Use ctx.back instead.
+     * When Referrer is not present `alt` or "/" is used.
      *
      * Examples:
      *
@@ -604,7 +604,9 @@ declare namespace Koa {
      * @param {String} [alt]
      * @api public
      */
-    redirect(url: string, alt?: string): void;
+    redirect(url: Omit<string, 'back'>): void;
+    /** @deprecated */
+    redirect(url: 'back', alt?: string): void;
     /**
      * Set Content-Disposition header to "attachment" with optional `filename`.
      *
@@ -713,6 +715,20 @@ declare namespace Koa {
      * Flush any set headers and begin the body
      */
     flushHeaders(): void;
+
+    /**
+   * Perform a special-cased "back" to provide Referrer support.
+   * When Referrer is not present, `alt` or "/" is used.
+   *
+   * Examples:
+   *
+   *    ctx.back()
+   *    ctx.back('/index.html')
+   *
+   * @param {String} [alt]
+   * @api public
+   */
+    back (alt: string): void;
   }
 
   /**
